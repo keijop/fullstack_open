@@ -13,30 +13,32 @@ const Statistics = ({good, neutral, bad}) => {
   
   return ( 
     <table>
-      <tr>
-        <td>Good</td>
-        <td><StatisticLine value={good} /></td>
-      </tr>
-      <tr>
-        <td>Neutral</td>
-        <td><StatisticLine value={neutral} /></td>
-      </tr>
-      <tr>
-        <td>Bad</td>
-        <td><StatisticLine value={bad} /></td>
-      </tr>
-      <tr>
-        <td>Total</td>
-        <td><StatisticLine value={totalFeedback(good, neutral, bad)} /></td>
-      </tr>
-      <tr>
-        <td>Average</td>
-        <td><StatisticLine value={average(good, neutral, bad)} /></td>
-      </tr>
-      <tr>
-        <td>Positive</td>
-        <td><StatisticLine value={positiveFeedback(good, neutral, bad)} /></td>
-      </tr>             
+      <tbody>
+        <tr>
+          <td>Good</td>
+          <td><StatisticLine value={good} /></td>
+        </tr>
+        <tr>
+          <td>Neutral</td>
+          <td><StatisticLine value={neutral} /></td>
+        </tr>
+        <tr>
+          <td>Bad</td>
+          <td><StatisticLine value={bad} /></td>
+        </tr>
+        <tr>
+          <td>Total</td>
+          <td><StatisticLine value={totalFeedback(good, neutral, bad)} /></td>
+        </tr>
+        <tr>
+          <td>Average</td>
+          <td><StatisticLine value={average(good, neutral, bad)} /></td>
+        </tr>
+        <tr>
+          <td>Positive</td>
+          <td><StatisticLine value={positiveFeedback(good, neutral, bad)} /></td>
+        </tr> 
+      </tbody>            
     </table> 
   )
 }
