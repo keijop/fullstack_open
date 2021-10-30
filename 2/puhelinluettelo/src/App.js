@@ -1,20 +1,34 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Contacts from './components/Contacts'
 import Filter from './components/Filter' 
 import PersonForm from './components/PersonForm' 
+import axios from 'axios'
 
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', phone: '040-123456' },
-    { name: 'Ada Lovelace', phone: '39-44-5323523' },
-    { name: 'Dan Abramov', phone: '12-43-234345' },
-    { name: 'Mary Poppendieck', phone: '39-23-6423122' }
+    { name: 'Arto Hellas', phone: '040-123456' }
   ]) 
   
   const [ filter, setFilter] = useState('')
   const [ newName, setNewName ] = useState('')
   const [ newPhone, setNewPhone ] = useState('')
+
+  // async function is nested as per react console.log warning/instructions:
+  // 'Effect callbacks are synchronous to prevent race conditions. Put the async function inside...' 
+  const hook = ()  => { 
+    const fetchData = async () =>{
+      try {
+        const response = await axios.get('http://localhost:3001/persons')
+        setPersons(response.data)
+      } catch(e) {
+        console.log(e);
+      }
+    }
+    fetchData()
+  }
+
+  useEffect(hook, [])
 
   const filterChangeHandler = (event) => {
     setFilter(event.target.value)
