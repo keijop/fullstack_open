@@ -5,21 +5,15 @@ import axios from 'axios'
 const DetailedCountry = ({country}) => {
 	
 	const [weather, setWeather] = useState(0)
-
-	const weatherAPIEndPoint=`https://api.openweathermap.org/data/2.5/weather?q=${country.capital[0]}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
 	
 	useEffect(()=>{
+		const weatherAPIEndPoint=`https://api.openweathermap.org/data/2.5/weather?q=${country.capital[0]}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
 		const getWeather = async () =>{
-			const weatherData = await fetch(weatherAPIEndPoint)
-			let d = await weatherData.json()
-
-			console.log(d)
-			console.log(d.main.temp)
-
-			setWeather(d)
+			const response = await axios.get(weatherAPIEndPoint)
+			setWeather(response.data)
 		}
 		getWeather()
-	},[])
+	}, [])
 
 	console.log('state', weather)
 

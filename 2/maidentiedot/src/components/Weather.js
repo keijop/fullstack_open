@@ -5,7 +5,7 @@ const Weather = ({country, weather}) => {
 		<div>
 			<b>{country.capital} current weather</b>
 			<div>
-				<img src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} />
+				<img alt='weather icon' src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`} />
 			</div>
 			<p>temp: {weather.main.temp} celcius</p>
 			<p>wind: {weather.wind.speed} m/s, {weather.wind.deg} degrees;</p>
