@@ -7,15 +7,20 @@ const DetailedCountry = ({country}) => {
 	const [weather, setWeather] = useState(0)
 	
 	useEffect(()=>{
+
 		const weatherAPIEndPoint=`https://api.openweathermap.org/data/2.5/weather?q=${country.capital[0]}&appid=${process.env.REACT_APP_API_KEY}&units=metric`
 		const getWeather = async () =>{
-			const response = await axios.get(weatherAPIEndPoint)
-			setWeather(response.data)
+			try {
+				const response = await axios.get(weatherAPIEndPoint)
+				setWeather(response.data)
+			} catch(e) {
+				console.log(e);
+			}
 		}
 		getWeather()
 	}, [])
 
-	console.log('state', weather)
+	
 
 	return (
 		<div>  
