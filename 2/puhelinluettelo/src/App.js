@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react'
 import Contacts from './components/Contacts'
 import Filter from './components/Filter' 
 import PersonForm from './components/PersonForm' 
+import Message from './components/Message' 
 import axios from 'axios'
 import services from './services/persons'
-
-
 
 const App = () => {
 
@@ -13,6 +12,9 @@ const App = () => {
   const [ filter, setFilter] = useState('')
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
+  const [ message, setMessage] = useState('')
+  //{type:'error', text:'big fat fail'}
+
 
   const baseUrl = 'http://localhost:3001/persons'
 
@@ -56,14 +58,23 @@ const App = () => {
 
       if(persons.find(person => person.name === newName)){
         if(!window.confirm(`${newName} already exists in phonebook, replace phone number?`)) return
+        
         const id = persons.find(person => person.name === newName).id
         const response = await services.updatePerson(newPerson, id)
         let updatedPersons = [...persons]
         const index = updatedPersons.findIndex(person => person.id === id)
         updatedPersons[index] = response.data
+
+        setMessage({type:'success', text:'Contact updated'})
+        setTimeout(() => setMessage(''), 3000)        
+
         setPersons(updatedPersons)    
       }else{
         const response = await services.addPerson(newPerson)
+
+        setMessage({type:'success', text:'Contact added'})
+        setTimeout(() => setMessage(''), 3000)
+
         setPersons( [ ...persons, response.data] )
       }
       
@@ -74,9 +85,26 @@ const App = () => {
   }
 
   const deleteHandler = async (event) => {
-    if (!window.confirm('Delete contact')) return
-    services.deletePerson(event, baseUrl)
-    setPersons(persons.filter( person => person.id !== Number(event.target.value)))
+    try {
+
+      if (!window.confirm('Delete contact')) return
+
+      const result = await services.deletePerson(event, baseUrl)
+
+      if(result instanceof Error) {
+      setMessage({type:'error', text:'Contact has already been removed from database'})
+      setTimeout(() => setMessage(''), 3000)
+      return
+      }
+
+      setMessage({type:'success', text:'Contact deleted'})
+      setTimeout(() => setMessage(''), 3000)
+
+      setPersons(persons.filter( person => person.id !== Number(event.target.value))) 
+
+    } catch(e) {
+      console.log(e);
+    }
   }
 
   // case insensitive solution: str.toLowerCase().startsWith(substr.toLowerCase())
@@ -87,6 +115,7 @@ const App = () => {
     <div>
       <h1>Phonebook</h1>
       <Filter filter={filter} changeHandler={filterChangeHandler} />
+      <Message message={message} />
       <PersonForm 
         newName={newName}
         nameChangeHandler={nameChangeHandler}

@@ -1,0 +1,17 @@
+.message{
+	width: fit-content;
+	font-weight: 700;
+	font-size: 1.5rem;
+	padding: 1rem;
+	margin: 1rem;
+}
+
+.error{
+	border: 3px solid red;
+	color: red;
+}
+
+.success{
+	border: 3px solid green;
+	color: green;
+}

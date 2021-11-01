@@ -24,9 +24,11 @@ const updatePerson = async (newPerson, id) => {
 const deletePerson = async (event) => {
 	try {
       const url = `${baseUrl}/${event.target.value}`
-      await axios.delete(url)
+      const response = await axios.delete(url)
+      return response
     } catch(e) {
       console.log(e);
+    	return e
     }
 }
 
