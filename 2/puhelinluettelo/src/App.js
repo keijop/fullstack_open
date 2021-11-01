@@ -3,23 +3,25 @@ import Contacts from './components/Contacts'
 import Filter from './components/Filter' 
 import PersonForm from './components/PersonForm' 
 import axios from 'axios'
+import services from './services/persons'
+
 
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', phone: '040-123456' }
-  ]) 
-  
+
+  const [persons, setPersons] = useState([]) 
   const [ filter, setFilter] = useState('')
   const [ newName, setNewName ] = useState('')
-  const [ newPhone, setNewPhone ] = useState('')
+  const [ newNumber, setNewNumber ] = useState('')
+
+  const baseUrl = 'http://localhost:3001/persons'
 
   // async function is nested as per react console.log warning/instructions:
   // 'Effect callbacks are synchronous to prevent race conditions. Put the async function inside...' 
   const hook = ()  => { 
     const fetchData = async () =>{
       try {
-        const response = await axios.get('http://localhost:3001/persons')
+        const response = await axios.get(baseUrl)
         setPersons(response.data)
       } catch(e) {
         console.log(e);
@@ -39,15 +41,42 @@ const App = () => {
   }
 
   const phoneCangeHandler = (event) => {
-    setNewPhone(event.target.value)
+    setNewNumber(event.target.value)
   }
 
-  const submitHandler = (event) => {
-    event.preventDefault()
-    if(persons.find(person => person.name === newName)){
-      return alert(`${newName} is already added to phonebook`)
+  const submitHandler = async (event) => {
+    try {
+      event.preventDefault()
+
+      const newPerson = {name : newName, number : newNumber}
+
+      if(persons.find(person => person.name === newName && person.number === newNumber)){
+          return alert(`${newName} is already added to phonebook`)
+      }
+
+      if(persons.find(person => person.name === newName)){
+        if(!window.confirm(`${newName} already exists in phonebook, replace phone number?`)) return
+        const id = persons.find(person => person.name === newName).id
+        const response = await services.updatePerson(newPerson, id)
+        let updatedPersons = [...persons]
+        const index = updatedPersons.findIndex(person => person.id === id)
+        updatedPersons[index] = response.data
+        setPersons(updatedPersons)    
+      }else{
+        const response = await services.addPerson(newPerson)
+        setPersons( [ ...persons, response.data] )
+      }
+      
+    } catch(e) {
+      console.log(e);
     }
-    setPersons( [ ...persons, {name : newName, phone : newPhone} ] )
+
+  }
+
+  const deleteHandler = async (event) => {
+    if (!window.confirm('Delete contact')) return
+    services.deletePerson(event, baseUrl)
+    setPersons(persons.filter( person => person.id !== Number(event.target.value)))
   }
 
   // case insensitive solution: str.toLowerCase().startsWith(substr.toLowerCase())
@@ -61,11 +90,11 @@ const App = () => {
       <PersonForm 
         newName={newName}
         nameChangeHandler={nameChangeHandler}
-        newPhone={newPhone}
+        newPhone={newNumber}
         phoneCangeHandler={phoneCangeHandler}
         submitHandler={submitHandler} 
       />
-      <Contacts contactList={contactList} />
+      <Contacts contactList={contactList} clickHandler={deleteHandler} />
     </div>
   )
 
