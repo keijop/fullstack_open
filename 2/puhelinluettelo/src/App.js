@@ -13,10 +13,9 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('')
   const [ message, setMessage] = useState('')
-  //{type:'error', text:'big fat fail'}
 
 
-  const baseUrl = 'http://localhost:3001/persons'
+  const baseUrl = '/api/persons'
 
   // async function is nested as per react console.log warning/instructions:
   // 'Effect callbacks are synchronous to prevent race conditions. Put the async function inside...' 
