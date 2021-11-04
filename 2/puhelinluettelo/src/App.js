@@ -60,6 +60,7 @@ const App = () => {
         
         const id = persons.find(person => person.name === newName).id
         const response = await services.updatePerson(newPerson, id)
+
         let updatedPersons = [...persons]
         const index = updatedPersons.findIndex(person => person.id === id)
         updatedPersons[index] = response.data
@@ -69,7 +70,18 @@ const App = () => {
 
         setPersons(updatedPersons)    
       }else{
+
         const response = await services.addPerson(newPerson)
+
+        if(response instanceof Error){
+          //axios error response body access - response.data
+          const errorData = response.response.data
+          //mongoose built-in validations error msg -> data.error 
+          //mongoose-unique-validator error msg -> data.msg
+          setMessage({type:'error', text: errorData.msg || errorData.error})
+          setTimeout(() => setMessage(''), 3000)
+          return
+        }
 
         setMessage({type:'success', text:'Contact added'})
         setTimeout(() => setMessage(''), 3000)
@@ -99,7 +111,8 @@ const App = () => {
       setMessage({type:'success', text:'Contact deleted'})
       setTimeout(() => setMessage(''), 3000)
 
-      setPersons(persons.filter( person => person.id !== Number(event.target.value))) 
+      const updatedPersons = persons.filter( person => person.id !== event.target.value)
+      setPersons(updatedPersons)
 
     } catch(e) {
       console.log(e);

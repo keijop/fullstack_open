@@ -7,7 +7,7 @@ const addPerson = async (newPerson) => {
     const response = await axios.post(baseUrl, newPerson)
     return response
   } catch(e) {
-    console.log(e);
+    return e
   }
 }
 
